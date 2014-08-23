@@ -465,7 +465,7 @@ def execute(prog, debug=false)
           puts "SOSS: #{ip.stackstack[-2]}"
           puts "Character executed: #{$char <= 0xffff ? $char.chr('UTF-8') : $char}"
           rows = $prog[[0, ip.y-2].max..[$bounds[1], ip.y+2].min]
-          puts "Rows surrounding IP: \n#{rows.map {|i| i.map {|j| j <= 0xffff && j > 9 ? j.chr('UTF-8') : ' '}.join('')}.join("\n")}"
+          puts "Rows surrounding IP: \n#{rows.map {|i| i.map {|j| j <= 0xffff && j > 9 ? begin; j.chr('UTF-8'); rescue RangeError; ' '; end : ' '}.join('')}.join("\n")}"
           gets
         end
         ip.move $bounds
@@ -478,22 +478,29 @@ def execute(prog, debug=false)
     end
   end
 end
-filename = ''
-debug = false
-parse = OptionParser.new do |opts|
-  opts.banner = "Usage: #{__FILE__} [options]"
-  opts.on('-f FILENAME', '--file FILENAME') do |file|
-    filename = file
+
+def main
+  filename = ''
+  debug = false
+  parse = OptionParser.new do |opts|
+    opts.banner = "Usage: #{__FILE__} [options]"
+    opts.on('-f FILENAME', '--file FILENAME') do |file|
+      filename = file
+    end
+    opts.on('-d', '--debug') do
+      debug = true
+    end
   end
-  opts.on('-d', '--debug') do
-    debug = true
+  parse.parse!
+  if File.file? filename and filename != ''
+    execute File.open(filename).read, debug
+  elsif filename == ''
+    print parse
+  else
+    puts "File #{filename} not found."
   end
 end
-parse.parse!
-if File.file? filename and filename != ''
-  execute File.open(filename).read, debug
-elsif filename == ''
-  print parse
-else
-  puts "File #{filename} not found."
+
+if __FILE__ == $0
+  main
 end
