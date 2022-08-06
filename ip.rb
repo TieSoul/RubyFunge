@@ -32,8 +32,8 @@ class BefungeIP
       @storeoffset = [0, 0]
       # fingerhash is a hash containing currently loaded fingerprint instructions, and prevhash is a hash containing
       # previously loaded ones, for restoring.
-      @prevhash = Hash[*('A'..'Z').to_a.zip([lambda {|ip| ip.delta = ip.delta.map {|i| -i}; puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}] * 26).flatten]
-      @fingerhash = Hash[*('A'..'Z').to_a.zip([lambda {|ip| ip.delta = ip.delta.map {|i| -i}; puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}] * 26).flatten]
+      @prevhash = Hash[*('A'..'Z').to_a.zip([lambda {|ip| ip.delta = ip.delta.map {|i| -i}; $stderr.puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}] * 26).flatten]
+      @fingerhash = Hash[*('A'..'Z').to_a.zip([lambda {|ip| ip.delta = ip.delta.map {|i| -i}; $stderr.puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}] * 26).flatten]
     end
     @stringmode = false
   end
@@ -108,7 +108,7 @@ class BefungeIP
         if fing.instance_variable_defined? letter
           letter = letter.to_s[-1]
           @fingerhash[letter] = @prevhash[letter].clone
-          @prevhash[letter] = lambda {|ip| ip.delta = ip.delta.map {|i| -i}; puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}
+          @prevhash[letter] = lambda {|ip| ip.delta = ip.delta.map {|i| -i}; $stderr.puts "Unloaded instruction #{$prog[ip.y][ip.x].chr} encountered at #{[ip.x-$origin[0], ip.y-$origin[1]]}"}
         end
       end
     end
