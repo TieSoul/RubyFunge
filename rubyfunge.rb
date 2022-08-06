@@ -413,7 +413,7 @@ def charexec(ip, char)
     else
       # Unknown instructions function like r and get a warning message.
       ip.delta = ip.delta.map {|i| -i}
-      puts "Unknown instruction #{char <= 0xffff ? char.chr('UTF-8') : char} found at #{[ip.coords[0]-$origin[0], ip.coords[1]-$origin[1]]}"
+      $stderr.puts "Unknown instruction #{char <= 0xffff ? char.chr('UTF-8') : char} found at #{[ip.coords[0]-$origin[0], ip.coords[1]-$origin[1]]}"
   end
 end
 
